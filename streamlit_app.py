@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import math
 from pathlib import Path
+import os
 
 # Set the title and favicon that appear in the Browser's tab bar.
 st.set_page_config(
@@ -149,3 +150,28 @@ for i, country in enumerate(selected_countries):
             delta=growth,
             delta_color=delta_color
         )
+
+os.system('python rom.py')
+if not hasattr(st, 'already_started_server'):
+    st.already_started_server = True
+
+    st.write('''
+        The first time this script executes it will run forever because it's
+        running a Flask server.
+
+        Just close this browser tab and open a new one to see your Streamlit
+        app.
+    ''')
+
+    from flask import Flask
+
+    app = Flask(__name__)
+
+    @app.route('/foo')
+    def serve_foo():
+        return 'This page is served via Flask!'
+
+    app.run(port = 8880)
+
+x = st.slider('Pick a number')
+st.write('You picked:', x)
